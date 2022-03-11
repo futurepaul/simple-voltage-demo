@@ -1,4 +1,4 @@
-# Hackathon Lightning node starter guide
+# Lightning hackathon node starter guide
 
 If you're at a [Voltage-sponsored hackathon](https://app.voltage.cloud/satsx) ask for a hot deal on "free lightning nodes" to get the code. 
 
