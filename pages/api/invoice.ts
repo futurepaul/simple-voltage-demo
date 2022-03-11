@@ -7,7 +7,7 @@ async function getInvoice({
   body: unknown;
   macaroonHex: string;
 }) {
-  return fetch(`https://${endpoint}:8080/v1/invoices`, {
+  return fetch(`https://${endpoint}/v1/invoices`, {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
@@ -42,11 +42,14 @@ export default async function handler(
       body: JSON.parse(body),
       macaroonHex,
     });
-    // const { invoice } = await invRes.json();
-    const { payment_request } = await invRes.json();
-    console.log(payment_request);
 
-    res.status(200).json({ invoice: payment_request });
+    const { payment_request, message } = await invRes.json();
+
+    if (message) {
+      res.status(500).json({ message });
+    } else {
+      res.status(200).json({ invoice: payment_request });
+    }
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }

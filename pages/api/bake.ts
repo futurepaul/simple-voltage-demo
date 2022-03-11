@@ -30,7 +30,7 @@ async function bakeMacaroon({
   endpoint: string;
   macaroonHex: string;
 }) {
-  return fetch(`https://${endpoint}:8080/v1/macaroon`, {
+  return fetch(`https://${endpoint}/v1/macaroon`, {
     method: "POST",
     body: JSON.stringify(invoicePermissions),
     headers: {
@@ -59,9 +59,13 @@ export default async function handler(
 
   try {
     const macRes = await bakeMacaroon({ endpoint, macaroonHex });
-    const { macaroon } = await macRes.json();
+    const { macaroon, message } = await macRes.json();
 
-    res.status(200).json({ macaroon });
+    if (message) {
+      res.status(500).json({ message });
+    } else {
+      res.status(200).json({ macaroon });
+    }
   } catch (e: any) {
     res.status(500).json({ message: e.message });
   }
