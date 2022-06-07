@@ -109,8 +109,12 @@ I used [BTC Pay for the OpenSats site](https://github.com/OpenSats/website/blob/
 
 ### LN Bits
 
-Another "frontend" for a lightning node is LNbits, which has its own simple API for create, pay, and check invoice.
+Another "frontend" for a lightning node is [LNbits](https://lnbits.com/), which has its own simple API for create, pay, and check invoice.
 
 But what's super cool about LNbits is all the extensions: you might discover the app you want to build already exists as a LNbits extension! (There are two Pleb.FM alternatives on LNbits). LNBits also has extensions for paywalls, Lightning Address, PoS, and LNURLw to name a few.
+
+### nigiri
+
+[Nigiri](https://github.com/vulpemventures/nigiri) is kind of like Polar in the command line without the pretty flow chart. Spin up bitcoin regtest + electrum + lnd + cln with a single command. Especially nice if you want to do some automated testing of your app.
 
 # glhf
