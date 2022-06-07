@@ -1,6 +1,6 @@
 # Lightning hackathon node starter guide
 
-If you're at a [Voltage-sponsored hackathon](https://app.voltage.cloud/satsx) ask for a hot deal on "free lightning nodes" to get the code. 
+If you're at a Voltage-sponsored hackathon ask for a hot deal on "free lightning nodes" to get a coupon code.
 
 ## Create a node (or a couple)
 
@@ -27,6 +27,7 @@ You can paste the txid into [mempool.space/testnet](https://mempool.space/testne
 If you can't get a lightning faucet to work for you, you'll have to get liquidity the old fashioned way. Send Testnet Bitcoin to your node, then use that TBTC to open channels to other testnet nodes.
 
 A few faucets to try:
+
 - https://bitcoinfaucet.uo1.net
 - https://testnet-faucet.mempool.co
 - https://coinfaucet.eu/en/btc-testnet/
@@ -41,6 +42,8 @@ I've implemented two features to help you get started:
 
 ### 1. Bake an invoice macaroon
 
+**Update:** Voltage offers "baking" and downloads for invoice and read-only macaroons in addition to admin now. Keeping these instructions in case you aren't using Voltage. Also because it explains how to use the LND REST API.
+
 You can get your admin macaroon in Voltage's connect tab, under "Manual". This gives you full control over your node. But if you want a more restrictive macaroon for, say, just generating invoices, you can "bake" macaroons with a subset of these permissions.
 
 The magic happens in `/api/bake.ts`. You'll need your admin macaroon in you `.env.local` for it to work
@@ -53,13 +56,14 @@ ADMIN_MACAROON_HEX=0201036C6E6402F801030A1076DCE62C9D3D...
 ```
 
 The actual REST call to LND looks like this:
+
 ```ts
 fetch(`https://${endpoint}:8080/v1/macaroon`, {
-    method: "POST",
-    body: JSON.stringify(invoicePermissions),
-    headers: {
-      "Grpc-Metadata-Macaroon": macaroonHex,
-    },
+  method: "POST",
+  body: JSON.stringify(invoicePermissions),
+  headers: {
+    "Grpc-Metadata-Macaroon": macaroonHex,
+  },
 });
 ```
 
@@ -88,5 +92,25 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 ```
 
 Because Polar uses self-signed certificates for https this override keeps things running smoothly. Obviously you wouldn't want this in production.
+
+# Other ways to talk to a node
+
+### ln-service
+
+If you're using node.js (or serverless), you might prefer the [ln-service](https://github.com/alexbosworth/ln-service/) for talking to your node over gRPC. Especially nice for doing subscriptions like [`subscribeToInvoice`](https://github.com/alexbosworth/ln-service/#subscribetoinvoice).
+
+Last hackathon I was at was won by someone using ln-service to communicate with a Voltage node: [Pleb.FM](https://github.com/atlantabitdevs/ln-jukebox/)
+
+### BTC Pay Server
+
+You can have BTC Pay server act as a "frontend" to your lightning node, both to display invoices and also to handle actions like webhooks.
+
+I used [BTC Pay for the OpenSats site](https://github.com/OpenSats/website/blob/master/pages/api/btcpay.ts) because we needed email receipts after payments. The frontend gets an invoice from BTC Pay, and once that invoice is paid it fires off a webhook to [Zaprite](https://zaprite.com/) which manages Stripe and BTC Pay payments in a central way.
+
+### LN Bits
+
+Another "frontend" for a lightning node is LNbits, which has its own simple API for create, pay, and check invoice.
+
+But what's super cool about LNbits is all the extensions: you might discover the app you want to build already exists as a LNbits extension! (There are two Pleb.FM alternatives on LNbits). LNBits also has extensions for paywalls, Lightning Address, PoS, and LNURLw to name a few.
 
 # glhf
