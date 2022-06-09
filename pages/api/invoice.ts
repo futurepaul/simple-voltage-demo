@@ -48,9 +48,11 @@ export default async function handler(
     if (message) {
       res.status(500).json({ message });
     } else {
+      console.log(payment_request);
       res.status(200).json({ invoice: payment_request });
     }
   } catch (e: any) {
+    console.log(e);
     res.status(500).json({ message: e.message });
   }
 }
